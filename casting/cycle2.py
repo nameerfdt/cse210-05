@@ -5,12 +5,9 @@ from shared.point import Point
 
 class Cycle2(Actor):
     """
-    A limbless player.
+    A cool bike.
     
     The responsibility of player is to move itself.
-
-    Attributes:
-        _points (int): The number of points the food is worth.
     """
 
     def __init__(self):
