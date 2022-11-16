@@ -85,6 +85,7 @@ __main__
 ## Required Technologies
 ---
 * Python 3.10
+* Raylib Python CFFI 3.7
 
 ## Authors
 ---
