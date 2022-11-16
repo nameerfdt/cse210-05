@@ -14,8 +14,11 @@ If a player collides with their opponent's trail...
 ## Getting Started
 ___
 
-Make sure you have Python 3.10 or newer installed and running on your machine. Open a terminal and 
-browse to the project's root folder. Start the program by running the following command.
+Make sure you have Python 3.10 or newer installed and Raylib Python CFFI 3.7 installed and running on your machine. You can install Raylib Python CFFI by opening a terminal and running the following command.
+```
+python3 -m pip install raylib
+``` 
+Open a terminal and browse to the project's root folder. Start the program by running the following command.
 ```
 __main__.py
 ```
