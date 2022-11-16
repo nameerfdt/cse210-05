@@ -1,4 +1,4 @@
-from game.scripting.action import Action
+from scripting.action import Action
 
 
 class DrawActorsAction(Action):
@@ -27,13 +27,12 @@ class DrawActorsAction(Action):
             script (Script): The script of Actions in the game.
         """
 
-        cycle = cast.get_first_actor("cycles")        
+        cycle = cast.get_first_actor("cycles")
         segments = cycle.get_segments()
         messages = cast.get_actors("messages")
 
         cycle2 = cast.get_first_actor("cycles2")
         segments2 = cycle2.get_segments()
-
 
         self._video_service.clear_buffer()
         self._video_service.draw_actors(segments)

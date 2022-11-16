@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dd210463-42d8-4e99-bb20-a0b3b22e25da" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/cycle/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/casting/actor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/casting/cast.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/casting/cycle.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/casting/cycle2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/directing/director.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/action.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/control_actors_action.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/control_actors_action2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/draw_actors_action.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/handle_collisions_action.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/move_actors_action.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/scripting/script.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/services/keyboard_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/services/video_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/shared/color.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cycle/game/shared/point.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2HNjI7RKHSHWvZPCA3Cf9sIX07N" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="foldersAlwaysOnTop" value="false" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/alex/Desktop/BYU I/CSE 210/git/cse210-05&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="cse210-05" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__main__.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dd210463-42d8-4e99-bb20-a0b3b22e25da" name="Changes" comment="" />
+      <created>1668132358823</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1668132358823</updated>
+    </task>
+    <task id="LOCAL-00001" summary="update the readme to reflect project structure">
+      <created>1668134684239</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1668134684239</updated>
+    </task>
+    <task id="LOCAL-00002" summary="save changes for group project">
+      <created>1668559576033</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1668559576033</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update the readme to reflect project structure" />
+    <MESSAGE value="save changes for group project" />
+    <option name="LAST_COMMIT_MESSAGE" value="save changes for group project" />
+  </component>
+</project>

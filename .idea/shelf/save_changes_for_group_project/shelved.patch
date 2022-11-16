@@ -1,0 +1,1252 @@
+Index: .idea/cse210-05.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/cse210-05.iml b/.idea/cse210-05.iml
+new file mode 100644
+--- /dev/null	(date 1668472528813)
++++ b/.idea/cse210-05.iml	(date 1668472528813)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="jdk" jdkName="Python 3.10" jdkType="Python SDK" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1668132419657)
++++ b/.idea/modules.xml	(date 1668132419657)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/cse210-05.iml" filepath="$PROJECT_DIR$/.idea/cse210-05.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: scripting/control_actors_action.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/scripting/control_actors_action.py b/scripting/control_actors_action.py
+new file mode 100644
+--- /dev/null	(date 1668474944766)
++++ b/scripting/control_actors_action.py	(date 1668474944766)
+@@ -0,0 +1,49 @@
++import constants
++from scripting.action import Action
++from shared.point import Point
++
++
++class ControlActorsAction(Action):
++    """
++    An input action that controls the snake.
++    
++    The responsibility of ControlActorsAction is to get the direction and move the snake's head.
++
++    Attributes:
++        _keyboard_service (KeyboardService): An instance of KeyboardService.
++    """
++
++    def __init__(self, keyboard_service):
++        """Constructs a new ControlActorsAction using the specified KeyboardService.
++        
++        Args:
++            keyboard_service (KeyboardService): An instance of KeyboardService.
++        """
++        self._keyboard_service = keyboard_service
++        self._direction = Point(constants.CELL_SIZE, 0)
++
++    def execute(self, cast, script):
++        """Executes the control actors action.
++
++        Args:
++            cast (Cast): The cast of Actors in the game.
++            script (Script): The script of Actions in the game.
++        """
++        # left
++        if self._keyboard_service.is_key_down('a'):
++            self._direction = Point(-constants.CELL_SIZE, 0)
++
++        # right
++        if self._keyboard_service.is_key_down('d'):
++            self._direction = Point(constants.CELL_SIZE, 0)
++
++        # up
++        if self._keyboard_service.is_key_down('w'):
++            self._direction = Point(0, -constants.CELL_SIZE)
++
++        # down
++        if self._keyboard_service.is_key_down('s'):
++            self._direction = Point(0, constants.CELL_SIZE)
++
++        snake = cast.get_first_actor("snakes")
++        snake.turn_head(self._direction)
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1668132419724)
++++ b/.idea/vcs.xml	(date 1668132419724)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/profiles_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/profiles_settings.xml b/.idea/inspectionProfiles/profiles_settings.xml
+new file mode 100644
+--- /dev/null	(date 1668132419762)
++++ b/.idea/inspectionProfiles/profiles_settings.xml	(date 1668132419762)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="USE_PROJECT_PROFILE" value="false" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file
+Index: scripting/handle_collisions_action.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/scripting/handle_collisions_action.py b/scripting/handle_collisions_action.py
+new file mode 100644
+--- /dev/null	(date 1668476389817)
++++ b/scripting/handle_collisions_action.py	(date 1668476389817)
+@@ -0,0 +1,93 @@
++import constants
++from casting.actor import Actor
++from scripting.action import Action
++from shared.point import Point
++
++
++class HandleCollisionsAction(Action):
++    """
++    An update action that handles interactions between the actors.
++    
++    The responsibility of HandleCollisionsAction is to handle the situation when the snake collides
++    with the food, or the snake collides with its segments, or the game is over.
++
++    Attributes:
++        _is_game_over (boolean): Whether or not the game is over.
++    """
++
++    def __init__(self):
++        """Constructs a new HandleCollisionsAction."""
++        self._is_game_over = False
++
++    def execute(self, cast, script):
++        """Executes the handle collisions action.
++
++        Args:
++            cast (Cast): The cast of Actors in the game.
++            script (Script): The script of Actions in the game.
++        """
++        if not self._is_game_over:
++            self._handle_food_collision(cast)
++            self._handle_segment_collision(cast)
++            self._handle_game_over(cast)
++
++    def _handle_food_collision(self, cast):
++        """Updates the score nd moves the food if the snake collides with the food.
++        
++        Args:
++            cast (Cast): The cast of Actors in the game.
++        """
++        score = cast.get_first_actor("scores")
++        food = cast.get_first_actor("foods")
++        cycles = cast.get_actors("snakes")
++        # head = snake.get_head()
++
++        for cycle in cycles:
++            cycle.grow_tail(1)
++
++        # if head.get_position().equals(food.get_position()):
++        #     points = food.get_points()
++        #     snake.grow_tail(points)
++        #     score.add_points(points)
++        #     food.reset()
++
++    def _handle_segment_collision(self, cast):
++        """Sets the game over flag if the snake collides with one of its segments.
++        
++        Args:
++            cast (Cast): The cast of Actors in the game.
++        """
++
++        cycles = cast.get_actors("snakes")
++        for cycle in cycles:
++            head = cycle.get_segments()[0]
++            segments = cycle.get_segments()[1:]
++
++            for segment in segments:
++                if head.get_position().equals(segment.get_position()):
++                    self._is_game_over = True
++
++    def _handle_game_over(self, cast):
++        """Shows the 'game over' message and turns the snake and food white if the game is over.
++        
++        Args:
++            cast (Cast): The cast of Actors in the game.
++        """
++        if self._is_game_over:
++            cycles = cast.get_actors("snakes")
++            for cycle in cycles:
++                segments = cycle.get_segments()
++                for segment in segments:
++                    segment.set_color(constants.WHITE)
++
++            x = int(constants.MAX_X / 2)
++            y = int(constants.MAX_Y / 2)
++            position = Point(x, y)
++
++            message = Actor()
++            message.set_text("Game Over!")
++            message.set_position(position)
++            cast.add_actor("messages", message)
++
++            food = cast.get_first_actor("foods")
++            food.set_color(constants.WHITE)
+Index: scripting/move_actors_action.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/scripting/move_actors_action.py b/scripting/move_actors_action.py
+new file mode 100644
+--- /dev/null	(date 1668473153124)
++++ b/scripting/move_actors_action.py	(date 1668473153124)
+@@ -0,0 +1,14 @@
++from scripting.action import Action
++
++
++# TODO: Implement MoveActorsAction class here!
++
++class MoveActorsAction(Action):
++    def execute(self, cast, script):
++        for actor in cast.get_all_actors():
++            actor.move_next()
++
++    # Override the execute(cast, script) method as follows:
++    # 1) get all the actors from the cast
++    # 2) loop through the actors
++    # 3) call the move_next() method on each actor
+Index: constants.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/constants.py b/constants.py
+new file mode 100644
+--- /dev/null	(date 1668473153263)
++++ b/constants.py	(date 1668473153263)
+@@ -0,0 +1,15 @@
++from shared.color import Color
++
++COLUMNS = 40
++ROWS = 20
++CELL_SIZE = 15
++MAX_X = 900
++MAX_Y = 600
++FRAME_RATE = 15
++FONT_SIZE = 15
++CAPTION = "Snake"
++SNAKE_LENGTH = 8
++WHITE = Color(255, 255, 255)
++RED = Color(255, 0, 0)
++YELLOW = Color(255, 255, 0)
++GREEN = Color(0, 255, 0)
+Index: __main__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/__main__.py b/__main__.py
+new file mode 100644
+--- /dev/null	(date 1668559417048)
++++ b/__main__.py	(date 1668559417048)
+@@ -0,0 +1,38 @@
++from casting.cast import Cast
++from casting.food import Food
++from casting.score import Score
++from casting.cycle_1 import Cycle1
++from scripting.script import Script
++from scripting.control_actors_action import ControlActorsAction
++from scripting.move_actors_action import MoveActorsAction
++from scripting.handle_collisions_action import HandleCollisionsAction
++from scripting.draw_actors_action import DrawActorsAction
++from directing.director import Director
++from services.keyboard_service import KeyboardService
++from services.video_service import VideoService
++
++
++def main():
++    # create the cast
++    cast = Cast()
++    cast.add_actor("foods", Food())
++    cast.add_actor("snakes", Cycle1())
++    # cast.add_actor("snakes", Cycle1())
++    cast.add_actor("scores", Score())
++
++    # start the game
++    keyboard_service = KeyboardService()
++    video_service = VideoService()
++
++    script = Script()
++    script.add_action("input", ControlActorsAction(keyboard_service))
++    script.add_action("update", MoveActorsAction())
++    script.add_action("update", HandleCollisionsAction())
++    script.add_action("output", DrawActorsAction(video_service))
++
++    director = Director(video_service)
++    director.start_game(cast, script)
++
++
++if __name__ == "__main__":
++    main()
+Index: directing/director.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/directing/director.py b/directing/director.py
+new file mode 100644
+--- /dev/null	(date 1667948481146)
++++ b/directing/director.py	(date 1667948481146)
+@@ -0,0 +1,42 @@
++class Director:
++    """A person who directs the game. 
++    
++    The responsibility of a Director is to control the sequence of play.
++
++    Attributes:
++        _video_service (VideoService): For providing video output.
++    """
++
++    def __init__(self, video_service):
++        """Constructs a new Director using the specified video service.
++        
++        Args:
++            video_service (VideoService): An instance of VideoService.
++        """
++        self._video_service = video_service
++
++    def start_game(self, cast, script):
++        """Starts the game using the given cast and script. Runs the main game loop.
++
++        Args:
++            cast (Cast): The cast of actors.
++            script (Script): The script of actions.
++        """
++        self._video_service.open_window()
++        while self._video_service.is_window_open():
++            self._execute_actions("input", cast, script)
++            self._execute_actions("update", cast, script)
++            self._execute_actions("output", cast, script)
++        self._video_service.close_window()
++
++    def _execute_actions(self, group, cast, script):
++        """Calls execute for each action in the given group.
++        
++        Args:
++            group (string): The action group name.
++            cast (Cast): The cast of actors.
++            script (Script): The script of actions.
++        """
++        actions = script.get_actions(group)
++        for action in actions:
++            action.execute(cast, script)
+Index: services/keyboard_service.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/services/keyboard_service.py b/services/keyboard_service.py
+new file mode 100644
+--- /dev/null	(date 1668472903246)
++++ b/services/keyboard_service.py	(date 1668472903246)
+@@ -0,0 +1,43 @@
++import pyray
++
++
++class KeyboardService:
++    """Detects player input. 
++    
++    The responsibility of a KeyboardService is to indicate whether or not a key is up or down.
++
++    Attributes:
++        _keys (Dict[string, int]): The letter to key mapping.
++    """
++
++    def __init__(self):
++        """Constructs a new KeyboardService."""
++        self._keys = {}
++
++        self._keys['w'] = pyray.KEY_W
++        self._keys['a'] = pyray.KEY_A
++        self._keys['s'] = pyray.KEY_S
++        self._keys['d'] = pyray.KEY_D
++
++        self._keys['i'] = pyray.KEY_I
++        self._keys['j'] = pyray.KEY_J
++        self._keys['k'] = pyray.KEY_K
++        self._keys['l'] = pyray.KEY_L
++
++    def is_key_up(self, key):
++        """Checks if the given key is currently up.
++        
++        Args:
++            key (string): The given key (w, a, s, d or i, j, k, l)
++        """
++        pyray_key = self._keys[key.lower()]
++        return pyray.is_key_up(pyray_key)
++
++    def is_key_down(self, key):
++        """Checks if the given key is currently down.
++        
++        Args:
++            key (string): The given key (w, a, s, d or i, j, k, l)
++        """
++        pyray_key = self._keys[key.lower()]
++        return pyray.is_key_down(pyray_key)
+Index: services/video_service.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/services/video_service.py b/services/video_service.py
+new file mode 100644
+--- /dev/null	(date 1668472898162)
++++ b/services/video_service.py	(date 1668472898162)
+@@ -0,0 +1,92 @@
++import pyray
++import constants
++
++
++class VideoService:
++    """Outputs the game state. The responsibility of the class of objects is to draw the game state 
++    on the screen. 
++    """
++
++    def __init__(self, debug=False):
++        """Constructs a new VideoService using the specified debug mode.
++        
++        Args:
++            debug (bool): whether or not to draw in debug mode.
++        """
++        self._debug = debug
++
++    def close_window(self):
++        """Closes the window and releases all computing resources."""
++        pyray.close_window()
++
++    def clear_buffer(self):
++        """Clears the buffer in preparation for the next rendering. This method should be called at
++        the beginning of the game's output phase.
++        """
++        pyray.begin_drawing()
++        pyray.clear_background(pyray.BLACK)
++        if self._debug == True:
++            self._draw_grid()
++
++    def draw_actor(self, actor, centered=False):
++        """Draws the given actor's text on the screen.
++
++        Args:
++            actor (Actor): The actor to draw.
++        """
++        text = actor.get_text()
++        x = actor.get_position().get_x()
++        y = actor.get_position().get_y()
++        font_size = actor.get_font_size()
++        color = actor.get_color().to_tuple()
++
++        if centered:
++            width = pyray.measure_text(text, font_size)
++            offset = int(width / 2)
++            x -= offset
++
++        pyray.draw_text(text, x, y, font_size, color)
++
++    def draw_actors(self, actors, centered=False):
++        """Draws the text for the given list of actors on the screen.
++
++        Args:
++            actors (list): A list of actors to draw.
++        """
++        for actor in actors:
++            self.draw_actor(actor, centered)
++
++    def flush_buffer(self):
++        """Copies the buffer contents to the screen. This method should be called at the end of
++        the game's output phase.
++        """
++        pyray.end_drawing()
++
++    def is_window_open(self):
++        """Whether or not the window was closed by the user.
++
++        Returns:
++            bool: True if the window is closing; false if otherwise.
++        """
++        return not pyray.window_should_close()
++
++    def open_window(self):
++        """Opens a new window with the provided title.
++
++        Args:
++            title (string): The title of the window.
++        """
++        pyray.init_window(constants.MAX_X, constants.MAX_Y, constants.CAPTION)
++        pyray.set_target_fps(constants.FRAME_RATE)
++
++    def _draw_grid(self):
++        """Draws a grid on the screen."""
++        for y in range(0, constants.MAX_Y, constants.CELL_SIZE):
++            pyray.draw_line(0, y, constants.MAX_X, y, pyray.GRAY)
++
++        for x in range(0, constants.MAX_X, constants.CELL_SIZE):
++            pyray.draw_line(x, 0, x, constants.MAX_Y, pyray.GRAY)
++
++    def _get_x_offset(self, text, font_size):
++        width = pyray.measure_text(text, font_size)
++        return int(width / 2)
+Index: casting/score.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/casting/score.py b/casting/score.py
+new file mode 100644
+--- /dev/null	(date 1668473153260)
++++ b/casting/score.py	(date 1668473153260)
+@@ -0,0 +1,28 @@
++from casting.actor import Actor
++
++
++class Score(Actor):
++    """
++    A record of points made or lost. 
++    
++    The responsibility of Score is to keep track of the points the player has earned by eating food.
++    It contains methods for adding and getting points. Client should use get_text() to get a string 
++    representation of the points earned.
++
++    Attributes:
++        _points (int): The points earned in the game.
++    """
++
++    def __init__(self):
++        super().__init__()
++        self._points = 0
++        self.add_points(0)
++
++    def add_points(self, points):
++        """Adds the given points to the score's total points.
++        
++        Args:
++            points (int): The points to add.
++        """
++        self._points += points
++        self.set_text(f"Score: {self._points}")
+Index: casting/actor.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/casting/actor.py b/casting/actor.py
+new file mode 100644
+--- /dev/null	(date 1668473153130)
++++ b/casting/actor.py	(date 1668473153130)
+@@ -0,0 +1,118 @@
++import constants
++from shared.color import Color
++from shared.point import Point
++
++
++class Actor:
++    """A visible, moveable thing that participates in the game. 
++    
++    The responsibility of Actor is to keep track of its appearance, position and velocity in 2d 
++    space.
++
++    Attributes:
++        _text (string): The text to display
++        _font_size (int): The font size to use.
++        _color (Color): The color of the text.
++        _position (Point): The screen coordinates.
++        _velocity (Point): The speed and direction.
++    """
++
++    def __init__(self):
++        """Constructs a new Actor."""
++        self._text = ""
++        self._font_size = 15
++        self._color = Color(255, 255, 255)
++        self._position = Point(0, 0)
++        self._velocity = Point(0, 0)
++
++    def get_color(self):
++        """Gets the actor's color as a tuple of three ints (r, g, b).
++        
++        Returns:
++            Color: The actor's text color.
++        """
++        return self._color
++
++    def get_font_size(self):
++        """Gets the actor's font size.
++        
++        Returns:
++            Point: The actor's font size.
++        """
++        return self._font_size
++
++    def get_position(self):
++        """Gets the actor's position in 2d space.
++        
++        Returns:
++            Point: The actor's position in 2d space.
++        """
++        return self._position
++
++    def get_text(self):
++        """Gets the actor's textual representation.
++        
++        Returns:
++            string: The actor's textual representation.
++        """
++        return self._text
++
++    def get_velocity(self):
++        """Gets the actor's speed and direction.
++        
++        Returns:
++            Point: The actor's speed and direction.
++        """
++        return self._velocity
++
++    def move_next(self):
++        """Moves the actor to its next position according to its velocity. Will wrap the position 
++        from one side of the screen to the other when it reaches the given maximum x and y values.
++        
++        Args:
++            max_x (int): The maximum x value.
++            max_y (int): The maximum y value.
++        """
++        x = (self._position.get_x() + self._velocity.get_x()) % constants.MAX_X
++        y = (self._position.get_y() + self._velocity.get_y()) % constants.MAX_Y
++        self._position = Point(x, y)
++
++    def set_color(self, color):
++        """Updates the color to the given one.
++        
++        Args:
++            color (Color): The given color.
++        """
++        self._color = color
++
++    def set_position(self, position):
++        """Updates the position to the given one.
++        
++        Args:
++            position (Point): The given position.
++        """
++        self._position = position
++
++    def set_font_size(self, font_size):
++        """Updates the font size to the given one.
++        
++        Args:
++            font_size (int): The given font size.
++        """
++        self._font_size = font_size
++
++    def set_text(self, text):
++        """Updates the text to the given value.
++        
++        Args:
++            text (string): The given value.
++        """
++        self._text = text
++
++    def set_velocity(self, velocity):
++        """Updates the velocity to the given one.
++        
++        Args:
++            velocity (Point): The given velocity.
++        """
++        self._velocity = velocity
+Index: casting/cycle_1.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/casting/cycle_1.py b/casting/cycle_1.py
+new file mode 100644
+--- /dev/null	(date 1668473960216)
++++ b/casting/cycle_1.py	(date 1668473960216)
+@@ -0,0 +1,70 @@
++import constants
++from casting.actor import Actor
++from shared.point import Point
++
++
++class Cycle1(Actor):
++    """
++    A long limbless reptile.
++    
++    The responsibility of Snake is to move itself.
++
++    Attributes:
++        _points (int): The number of points the food is worth.
++    """
++
++    def __init__(self):
++        super().__init__()
++        self._segments = []
++        self._prepare_body()
++
++    def get_segments(self):
++        return self._segments
++
++    def move_next(self):
++        # move all segments
++        for segment in self._segments:
++            segment.move_next()
++        # update velocities
++        for i in range(len(self._segments) - 1, 0, -1):
++            trailing = self._segments[i]
++            previous = self._segments[i - 1]
++            velocity = previous.get_velocity()
++            trailing.set_velocity(velocity)
++
++    def get_head(self):
++        return self._segments[0]
++
++    def grow_tail(self, number_of_segments):
++        for i in range(number_of_segments):
++            tail = self._segments[-1]
++            velocity = tail.get_velocity()
++            offset = velocity.reverse()
++            position = tail.get_position().add(offset)
++
++            segment = Actor()
++            segment.set_position(position)
++            segment.set_velocity(velocity)
++            segment.set_text("#")
++            segment.set_color(constants.GREEN)
++            self._segments.append(segment)
++
++    def turn_head(self, velocity):
++        self._segments[0].set_velocity(velocity)
++
++    def _prepare_body(self):
++        x = int(constants.MAX_X / 2)
++        y = int(constants.MAX_Y / 2)
++
++        for i in range(constants.SNAKE_LENGTH):
++            position = Point(x - i * constants.CELL_SIZE, y)
++            velocity = Point(1 * constants.CELL_SIZE, 0)
++            text = "8" if i == 0 else "#"
++            color = constants.YELLOW if i == 0 else constants.GREEN
++
++            segment = Actor()
++            segment.set_position(position)
++            segment.set_velocity(velocity)
++            segment.set_text(text)
++            segment.set_color(color)
++            self._segments.append(segment)
+Index: casting/cast.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/casting/cast.py b/casting/cast.py
+new file mode 100644
+--- /dev/null	(date 1636644133000)
++++ b/casting/cast.py	(date 1636644133000)
+@@ -0,0 +1,75 @@
++class Cast:
++    """A collection of actors.
++
++    The responsibility of a cast is to keep track of a collection of actors. It has methods for 
++    adding, removing and getting them by a group name.
++
++    Attributes:
++        _actors (dict): A dictionary of actors { key: group_name, value: a list of actors }
++    """
++
++    def __init__(self):
++        """Constructs a new Actor."""
++        self._actors = {}
++        
++    def add_actor(self, group, actor):
++        """Adds an actor to the given group.
++        
++        Args:
++            group (string): The name of the group.
++            actor (Actor): The actor to add.
++        """
++        if not group in self._actors.keys():
++            self._actors[group] = []
++            
++        if not actor in self._actors[group]:
++            self._actors[group].append(actor)
++
++    def get_actors(self, group):
++        """Gets the actors in the given group.
++        
++        Args:
++            group (string): The name of the group.
++
++        Returns:
++            List: The actors in the group.
++        """
++        results = []
++        if group in self._actors.keys():
++            results = self._actors[group].copy()
++        return results
++    
++    def get_all_actors(self):
++        """Gets all of the actors in the cast.
++        
++        Returns:
++            List: All of the actors in the cast.
++        """
++        results = []
++        for group in self._actors:
++            results.extend(self._actors[group])
++        return results
++
++    def get_first_actor(self, group):
++        """Gets the first actor in the given group.
++        
++        Args:
++            group (string): The name of the group.
++            
++        Returns:
++            List: The first actor in the group.
++        """
++        result = None
++        if group in self._actors.keys():
++            result = self._actors[group][0]
++        return result
++
++    def remove_actor(self, group, actor):
++        """Removes an actor from the given group.
++        
++        Args:
++            group (string): The name of the group.
++            actor (Actor): The actor to remove.
++        """
++        if group in self._actors:
++            self._actors[group].remove(actor)
+\ No newline at end of file
+Index: shared/point.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/shared/point.py b/shared/point.py
+new file mode 100644
+--- /dev/null	(date 1636820727000)
++++ b/shared/point.py	(date 1636820727000)
+@@ -0,0 +1,82 @@
++class Point:
++    """A distance from a relative origin (0, 0).
++
++    The responsibility of Point is to hold and provide information about itself. Point has a few 
++    convenience methods for adding, scaling, and comparing them.
++
++    Attributes:
++        _x (integer): The horizontal distance from the origin.
++        _y (integer): The vertical distance from the origin.
++    """
++    
++    def __init__(self, x, y):
++        """Constructs a new Point using the specified x and y values.
++        
++        Args:
++            x (int): The specified x value.
++            y (int): The specified y value.
++        """
++        self._x = x
++        self._y = y
++
++    def add(self, other):
++        """Gets a new point that is the sum of this and the given one.
++
++        Args:
++            other (Point): The Point to add.
++
++        Returns:
++            Point: A new Point that is the sum.
++        """
++        x = self._x + other.get_x()
++        y = self._y + other.get_y()
++        return Point(x, y)
++
++    def equals(self, other):
++        """Whether or not this Point is equal to the given one.
++
++        Args:
++            other (Point): The Point to compare.
++
++        Returns: 
++            boolean: True if both x and y are equal; false if otherwise.
++        """
++        return self._x == other.get_x() and self._y == other.get_y()
++
++    def get_x(self):
++        """Gets the horizontal distance.
++        
++        Returns:
++            integer: The horizontal distance.
++        """
++        return self._x
++
++    def get_y(self):
++        """Gets the vertical distance.
++        
++        Returns:
++            integer: The vertical distance.
++        """
++        return self._y
++
++    def reverse(self):
++        """Reverses the point by inverting both x and y values.
++
++        Returns:
++            Point: A new point that is reversed.
++        """
++        new_x = self._x * -1
++        new_y = self._y * -1
++        return Point(new_x, new_y)
++
++    def scale(self, factor):
++        """
++        Scales the point by the provided factor.
++
++        Args:
++            factor (int): The amount to scale.
++            
++        Returns:
++            Point: A new Point that is scaled.
++        """
++        return Point(self._x * factor, self._y * factor)
+\ No newline at end of file
+Index: casting/food.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/casting/food.py b/casting/food.py
+new file mode 100644
+--- /dev/null	(date 1668473148253)
++++ b/casting/food.py	(date 1668473148253)
+@@ -0,0 +1,41 @@
++import random
++
++import constants
++from casting.actor import Actor
++from shared.point import Point
++
++
++class Food(Actor):
++    """
++    A tasty item that snakes like to eat.
++    
++    The responsibility of Food is to select a random position and points that it's worth.
++
++    Attributes:
++        _points (int): The number of points the food is worth.
++    """
++
++    def __init__(self):
++        """Constructs a new Food."""
++        super().__init__()
++        self._points = 0
++        self.set_text("@")
++        self.set_color(constants.RED)
++        self.reset()
++
++    def reset(self):
++        """Selects a random position and points that the food is worth."""
++        self._points = random.randint(1, 8)
++        x = random.randint(1, constants.COLUMNS - 1)
++        y = random.randint(1, constants.ROWS - 1)
++        position = Point(x, y)
++        position = position.scale(constants.CELL_SIZE)
++        self.set_position(position)
++
++    def get_points(self):
++        """Gets the points the food is worth.
++        
++        Returns:
++            points (int): The points the food is worth.
++        """
++        return self._points
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1668472528841)
++++ b/.idea/misc.xml	(date 1668472528841)
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10" project-jdk-type="Python SDK" />
++</project>
+\ No newline at end of file
+Index: shared/color.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/shared/color.py b/shared/color.py
+new file mode 100644
+--- /dev/null	(date 1636647514000)
++++ b/shared/color.py	(date 1636647514000)
+@@ -0,0 +1,35 @@
++class Color:
++    """A color.
++
++    The responsibility of Color is to hold and provide information about itself. Color has a few 
++    convenience methods for comparing them and converting to a tuple.
++
++    Attributes:
++        _red (int): The red value.
++        _green (int): The green value.
++        _blue (int): The blue value.
++        _alpha (int): The alpha or opacity.
++    """
++    
++    def __init__(self, red, green, blue, alpha = 255):
++        """Constructs a new Color using the specified red, green, blue and alpha values. The alpha 
++        value is the color's opacity.
++        
++        Args:
++            red (int): A red value.
++            green (int): A green value.
++            blue (int): A blue value.
++            alpha (int): An alpha or opacity.
++        """
++        self._red = red
++        self._green = green
++        self._blue = blue 
++        self._alpha = alpha
++
++    def to_tuple(self):
++        """Gets the color as a tuple of four values (red, green, blue, alpha).
++
++        Returns:
++            Tuple(int, int, int, int): The color as a tuple.
++        """
++        return (self._red, self._green, self._blue, self._alpha)   
+\ No newline at end of file
+Index: scripting/script.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/scripting/script.py b/scripting/script.py
+new file mode 100644
+--- /dev/null	(date 1636817382000)
++++ b/scripting/script.py	(date 1636817382000)
+@@ -0,0 +1,50 @@
++class Script:
++    """A collection of actions.
++
++    The responsibility of Script is to keep track of a collection of actions. It has methods for 
++    adding, removing and getting them by a group name.
++
++    Attributes:
++        _actions (dict): A dictionary of actions { key: group_name, value: a list of actions }
++    """
++
++    def __init__(self):
++        """Constructs a new Action."""
++        self._actions = {}
++        
++    def add_action(self, group, action):
++        """Adds an action to the given group.
++        
++        Args:
++            group (string): The name of the group.
++            action (Action): The action to add.
++        """
++        if not group in self._actions.keys():
++            self._actions[group] = []
++            
++        if not action in self._actions[group]:
++            self._actions[group].append(action)
++
++    def get_actions(self, group):
++        """Gets the actions in the given group.
++        
++        Args:
++            group (string): The name of the group.
++
++        Returns:
++            List: The actions in the group.
++        """
++        results = []
++        if group in self._actions.keys():
++            results = self._actions[group].copy()
++        return results
++    
++    def remove_action(self, group, action):
++        """Removes an action from the given group.
++        
++        Args:
++            group (string): The name of the group.
++            action (Action): The action to remove.
++        """
++        if group in self._actions:
++            self._actions[group].remove(action)
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1668132383412)
++++ b/.idea/.gitignore	(date 1668132383412)
+@@ -0,0 +1,3 @@
++# Default ignored files
++/shelf/
++/workspace.xml
+Index: scripting/draw_actors_action.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/scripting/draw_actors_action.py b/scripting/draw_actors_action.py
+new file mode 100644
+--- /dev/null	(date 1668475841932)
++++ b/scripting/draw_actors_action.py	(date 1668475841932)
+@@ -0,0 +1,42 @@
++from scripting.action import Action
++
++
++class DrawActorsAction(Action):
++    """
++    An output action that draws all the actors.
++    
++    The responsibility of DrawActorsAction is to draw all the actors.
++
++    Attributes:
++        _video_service (VideoService): An instance of VideoService.
++    """
++
++    def __init__(self, video_service):
++        """Constructs a new DrawActorsAction using the specified VideoService.
++        
++        Args:
++            video_service (VideoService): An instance of VideoService.
++        """
++        self._video_service = video_service
++
++    def execute(self, cast, script):
++        """Executes the draw actors action.
++
++        Args:
++            cast (Cast): The cast of Actors in the game.
++            script (Script): The script of Actions in the game.
++        """
++        score = cast.get_first_actor("scores")
++        food = cast.get_first_actor("foods")
++        cycles = cast.get_actors("snakes")
++        messages = cast.get_actors("messages")
++
++        self._video_service.clear_buffer()
++        self._video_service.draw_actor(food)
++        self._video_service.flush_buffer()
++        self._video_service.draw_actors(messages, True)
++        self._video_service.draw_actor(score)
++        for cycle in cycles:
++            segments = cycle.get_segments()
++
++            self._video_service.draw_actors(segments)
+Index: scripting/action.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/scripting/action.py b/scripting/action.py
+new file mode 100644
+--- /dev/null	(date 1636811380000)
++++ b/scripting/action.py	(date 1636811380000)
+@@ -0,0 +1,16 @@
++class Action:
++    """A thing that is done.
++    
++    The responsibility of action is to do somthing that is integral or important in the game. Thus,
++    it has one method, execute(), which should be overridden by derived classes.
++    """
++
++    def execute(self, cast, script):
++        """Executes something that is important in the game. This method should be overriden by 
++        derived classes.
++
++        Args:
++            cast (Cast): The cast of Actors in the game.
++            script (Script): The script of Actions in the game.
++        """
++        pass
+\ No newline at end of file
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml
+new file mode 100644
+--- /dev/null	(date 1668132419430)
++++ b/.idea/inspectionProfiles/Project_Default.xml	(date 1668132419430)
+@@ -0,0 +1,13 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
++      <option name="ignoredIdentifiers">
++        <list>
++          <option value="list.join" />
++          <option value="rfk.__main__.Artifact" />
++        </list>
++      </option>
++    </inspection_tool>
++  </profile>
++</component>
+\ No newline at end of file

@@ -1,4 +1,5 @@
-from game.scripting.action import Action
+from scripting.action import Action
+
 
 class MoveActorsAction(Action):
     """An update action that handles movement of actors
@@ -9,6 +10,6 @@ class MoveActorsAction(Action):
 
     def execute(self, cast, script):
         actors = cast.get_all_actors()
-        
+
         for actor in actors:
             actor.move_next()

@@ -1,9 +1,9 @@
 import constants
-from game.scripting.action import Action
-from game.shared.point import Point
+from scripting.action import Action
+from shared.point import Point
 
 
-class ControlActorsAction2(Action):
+class ControlActorsAction(Action):
     """
     An input action that controls the snake.
     
@@ -20,6 +20,8 @@ class ControlActorsAction2(Action):
             keyboard_service (KeyboardService): An instance of KeyboardService.
         """
         self._keyboard_service = keyboard_service
+        # self._direction = Point(constants.CELL_SIZE, 0)
+        # flipped x,y and cycles started out at vertical
         self._direction = Point(0, -constants.CELL_SIZE)
 
     def execute(self, cast, script):
@@ -30,21 +32,20 @@ class ControlActorsAction2(Action):
             script (Script): The script of Actions in the game.
         """
         # left
-        if self._keyboard_service.is_key_down('j'):
+        if self._keyboard_service.is_key_down('a'):
             self._direction = Point(-constants.CELL_SIZE, 0)
-        
-        # right
-        if self._keyboard_service.is_key_down('l'):
-            self._direction = Point(constants.CELL_SIZE, 0)
-        
-        # up
-        if self._keyboard_service.is_key_down('i'):
-            self._direction = Point(0, -constants.CELL_SIZE)
-        
-        # down
-        if self._keyboard_service.is_key_down('k'):
-            self._direction = Point(0, constants.CELL_SIZE)
-        
 
-        cycle2 = cast.get_first_actor("cycles2")
-        cycle2.turn_head(self._direction)
+        # right
+        if self._keyboard_service.is_key_down('d'):
+            self._direction = Point(constants.CELL_SIZE, 0)
+
+        # up
+        if self._keyboard_service.is_key_down('w'):
+            self._direction = Point(0, -constants.CELL_SIZE)
+
+        # down
+        if self._keyboard_service.is_key_down('s'):
+            self._direction = Point(0, constants.CELL_SIZE)
+
+        cycle = cast.get_first_actor("cycles")
+        cycle.turn_head(self._direction)
